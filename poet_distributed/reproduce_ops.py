@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
+# TODO: Need to edit to our version of Env_config
 from poet_distributed.niches.box2d.env import Env_config
 import numpy as np
 
-
+# TODO: Need a version for our Env_config
 def name_env_config(ground_roughness,
                     pit_gap,
                     stump_width, stump_height, stump_float,
@@ -141,3 +141,5 @@ class Reproducer:
             stair_steps=stair_steps)
 
         return child
+
+#TODO: Need to create a class with a new mutate function that fits our parameters

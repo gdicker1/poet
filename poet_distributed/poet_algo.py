@@ -20,7 +20,9 @@ import numpy as np
 from poet_distributed.es import ESOptimizer
 from poet_distributed.es import initialize_worker_fiber
 from collections import OrderedDict
+# TODO: modify this to use a differente Env_config
 from poet_distributed.niches.box2d.env import Env_config
+# TODO: modify this line to use a different Reproducer
 from poet_distributed.reproduce_ops import Reproducer
 from poet_distributed.novelty import compute_novelty_vs_archive
 import json
@@ -29,6 +31,7 @@ import json
 def construct_niche_fns_from_env(args, env, seed):
     def niche_wrapper(configs, seed):  # force python to make a new lexical scope
         def make_niche():
+            # TODO: modify to use MinigridNiche
             from poet_distributed.niches import Box2DNiche
             return Box2DNiche(env_configs=configs,
                             seed=seed,
@@ -63,6 +66,7 @@ class MultiESOptimizer:
 
         self.env_registry = OrderedDict()
         self.env_archive = OrderedDict()
+        # TODO: Modify the reproducer
         self.env_reproducer = Reproducer(args)
         self.optimizers = OrderedDict()
 
@@ -98,6 +102,7 @@ class MultiESOptimizer:
                 self.add_optimizer(env=env, seed=seed, model_params=model_params)
 
         else:
+            # TODO: Modify for our parameters
             env = Env_config(
                 name='flat',
                 ground_roughness=0,
@@ -124,6 +129,7 @@ class MultiESOptimizer:
             theta=niche.initial_theta()
         assert optim_id not in self.optimizers.keys()
 
+        # TODO: Modify to minigrid optimizer
         return ESOptimizer(
             optim_id=optim_id,
             fiber_pool=self.fiber_pool,

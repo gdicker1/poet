@@ -15,6 +15,7 @@
 
 import numpy as np
 
+# TODO: Need version of this for our env config
 def env2array(env):
     arr = [0., 0., 0., 0., 0.]
     arr[0] = env.ground_roughness
@@ -27,6 +28,7 @@ def env2array(env):
 
     return arr
 
+# TODO: Need to rewrite for our env config
 def euclidean_distance(nx, ny, normalize=False):
 
     x = np.array(env2array(nx))
