@@ -20,10 +20,10 @@ import numpy as np
 from poet_distributed.es import ESOptimizer
 from poet_distributed.es import initialize_worker_fiber
 from collections import OrderedDict
-# TODO: modify this to use a differente Env_config
-from poet_distributed.niches.box2d.env import Env_config
-# TODO: modify this line to use a different Reproducer
-from poet_distributed.reproduce_ops import Reproducer
+# GDD: modify this to use a differente Env_config
+from poet_distributed.niches.minigrid.env import Env_config
+# GDD: modify this line to use a different Reproducer
+from poet_distributed.reproduce_ops import MG_Reproducer as Reproducer
 from poet_distributed.novelty import compute_novelty_vs_archive
 import json
 
@@ -31,9 +31,9 @@ import json
 def construct_niche_fns_from_env(args, env, seed):
     def niche_wrapper(configs, seed):  # force python to make a new lexical scope
         def make_niche():
-            # TODO: modify to use MinigridNiche
-            from poet_distributed.niches import Box2DNiche
-            return Box2DNiche(env_configs=configs,
+            # GDD : modify to use MinigridNiche
+            from poet_distributed.niches import MinigridNiche
+            return MinigridNiche(env_configs=configs,
                             seed=seed,
                             init=args.init,
                             stochastic=args.stochastic)
@@ -66,7 +66,7 @@ class MultiESOptimizer:
 
         self.env_registry = OrderedDict()
         self.env_archive = OrderedDict()
-        # TODO: Modify the reproducer
+        # GDD: Modify the reproducer
         self.env_reproducer = Reproducer(args)
         self.optimizers = OrderedDict()
 
@@ -102,17 +102,15 @@ class MultiESOptimizer:
                 self.add_optimizer(env=env, seed=seed, model_params=model_params)
 
         else:
-            # TODO: Modify for our parameters
+            # TODO: Modify for our parameters, start with empty lists so reproducer handles it
             env = Env_config(
-                name='flat',
-                ground_roughness=0,
-                pit_gap=[],
-                stump_width=[],
-                stump_height=[],
-                stump_float=[],
-                stair_height=[],
-                stair_width=[],
-                stair_steps=[])
+                name='base',
+                lava_prob=[],
+                obstacle_lvl=[],
+                box_to_ball_prob=[],
+                door_prob=[],
+                wall_prob=[]
+                )
 
             self.add_optimizer(env=env, seed=args.master_seed)
 

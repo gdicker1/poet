@@ -15,20 +15,17 @@
 
 import numpy as np
 
-# TODO: Need version of this for our env config
+# GDD: Need version of this for our env config
 def env2array(env):
-    arr = [0., 0., 0., 0., 0.]
-    arr[0] = env.ground_roughness
-    if len(env.pit_gap) > 0:
-        arr[1] = env.pit_gap[0]
-        arr[2] = env.pit_gap[1]
-    if len(env.stump_height) > 0:
-        arr[3] = env.stump_height[0]
-        arr[4] = env.stump_height[1]
-
+    arr = [0., 0., 0., 0., 0., 0.]
+    arr[0] = env.lava_prob
+    arr[1] = env.obstacle_level
+    arr[2] = env.box_to_ball_prob
+    arr[3] = door_prob
+    arr[4] = wall_prob
     return arr
 
-# TODO: Need to rewrite for our env config
+# GDD: Need to rewrite for our env config
 def euclidean_distance(nx, ny, normalize=False):
 
     x = np.array(env2array(nx))
@@ -38,6 +35,7 @@ def euclidean_distance(nx, ny, normalize=False):
     y = y.astype(float)
 
     if normalize:
+        # Unsure what this should be for minigrid, but it looks like normalize is never turned on
         norm = np.array([8., 8., 8., 3., 3.])
         x /= norm
         y /= norm
