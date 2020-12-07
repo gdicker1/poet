@@ -30,12 +30,12 @@ Game = namedtuple('Game', ['env_name', 'time_factor', 'input_size',
                            'output_size', 'layers', 'activation', 'noise_bias',
                            'output_noise'])
 
-minigridhard_custom = Game(env_name='MiniGridCustom-v0',
+minigridhard_custom = Game(env_name='MiniGridCustom',
                         input_size=148,
-                        output_size=11,
+                        output_size=7,
                         time_factor=0,
                         layers=[40, 40],
-                        activation='sigmoid',
+                        activation='softmax',
                         noise_bias=0.0,
                         output_noise=[False, False, False],
                         )
