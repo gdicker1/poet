@@ -16,6 +16,7 @@
 from argparse import ArgumentParser
 import logging
 logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.DEBUG) # Uncomment this line for debug messages
 logger = logging.getLogger(__name__)
 import numpy as np
 from poet_distributed.es import initialize_master_fiber
@@ -56,9 +57,12 @@ def main():
     parser.add_argument('--n_iterations', type=int, default=200)
     parser.add_argument('--steps_before_transfer', type=int, default=25)
     parser.add_argument('--master_seed', type=int, default=111)
-    parser.add_argument('--mc_lower', type=int, default=0.2)
-    parser.add_argument('--mc_upper', type=int, default=0.8)
-    parser.add_argument('--repro_threshold', type=int, default=0.65)
+    # parser.add_argument('--mc_lower', type=int, default=-30)
+    # parser.add_argument('--mc_upper', type=int, default=65)
+    # parser.add_argument('--repro_threshold', type=int, default=0.0)
+    parser.add_argument('--mc_lower', type=int, default=-20)
+    parser.add_argument('--mc_upper', type=int, default=70)
+    parser.add_argument('--repro_threshold', type=int, default=-10.0)
     parser.add_argument('--max_num_envs', type=int, default=100)
     parser.add_argument('--normalize_grads_by_noise_std', action='store_true', default=False)
     parser.add_argument('--propose_with_adam', action='store_true', default=False)
