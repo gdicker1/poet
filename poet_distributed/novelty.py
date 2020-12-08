@@ -17,37 +17,25 @@ import numpy as np
 
 # GDD: Need version of this for our env config
 def env2array(env):
-    arr = [0., 0., 0., 0., 0., 0.]
-    arr[0] = env.lava_prob
-    arr[1] = env.obstacle_level
-    arr[2] = env.box_to_ball_prob
-    arr[3] = door_prob
-    arr[4] = wall_prob
+    arr = np.zeros(10)
+    arr[0:2] = env.lava_prob
+    arr[2:4] = env.obstacle_lvl
+    arr[4:6] = env.box_to_ball_prob
+    arr[6:8] = env.door_prob
+    arr[8:] = env.wall_prob
     return arr
 
 # GDD: Need to rewrite for our env config
 def euclidean_distance(nx, ny, normalize=False):
 
-    x = np.array(env2array(nx))
-    y = np.array(env2array(ny))
+    x = np.array(env2array(nx), dtype=np.float32)
+    y = np.array(env2array(ny), dtype=np.float32)
 
-    x = x.astype(float)
-    y = y.astype(float)
+    diff = x - y
+    
 
-    if normalize:
-        # Unsure what this should be for minigrid, but it looks like normalize is never turned on
-        norm = np.array([8., 8., 8., 3., 3.])
-        x /= norm
-        y /= norm
+    return np.sqrt(np.sum(np.power(diff,2)))
 
-    n, m = len(x), len(y)
-    if n > m:
-        a = np.linalg.norm(y - x[:m])
-        b = np.linalg.norm(y[-1] - x[m:])
-    else:
-        a = np.linalg.norm(x - y[:n])
-        b = np.linalg.norm(x[-1] - y[n:])
-    return np.sqrt(a**2 + b**2)
 
 def compute_novelty_vs_archive(archive, niche, k):
     distances = []

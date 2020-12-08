@@ -22,6 +22,7 @@ from poet_distributed.es import initialize_worker_fiber
 from collections import OrderedDict
 # GDD: modify this to use a differente Env_config
 from poet_distributed.niches.minigrid.env import Env_config
+from poet_distributed.niches.minigrid.minigrid import DEFAULT_ENV
 # GDD: modify this line to use a different Reproducer
 from poet_distributed.reproduce_ops import MG_Reproducer as Reproducer
 from poet_distributed.novelty import compute_novelty_vs_archive
@@ -32,8 +33,8 @@ def construct_niche_fns_from_env(args, env, seed):
     def niche_wrapper(configs, seed):  # force python to make a new lexical scope
         def make_niche():
             # GDD : modify to use MinigridNiche
-            from poet_distributed.niches import MinigridNiche
-            return MinigridNiche(env_configs=configs,
+            from poet_distributed.niches import MiniGridNiche
+            return MiniGridNiche(env_configs=configs,
                             seed=seed,
                             init=args.init,
                             stochastic=args.stochastic)
@@ -103,14 +104,7 @@ class MultiESOptimizer:
 
         else:
             # TODO: Modify for our parameters, start with empty lists so reproducer handles it
-            env = Env_config(
-                name='base',
-                lava_prob=[],
-                obstacle_lvl=[],
-                box_to_ball_prob=[],
-                door_prob=[],
-                wall_prob=[]
-                )
+            env = DEFAULT_ENV
 
             self.add_optimizer(env=env, seed=args.master_seed)
 
@@ -248,6 +242,7 @@ class MultiESOptimizer:
             logger.info("niche {} created at {} start_score {} current_self_evals {}".format(
                 optim_id, o.created_at, o.start_score, o.self_evals))
             if o.self_evals >= self.args.repro_threshold:
+                logger.debug("GDD: appending success {} to repro_candidates".format(optim_id))
                 repro_candidates.append(optim_id)
 
         logger.debug("candidates to reproduce")
@@ -326,7 +321,6 @@ class MultiESOptimizer:
             if child_list == None or len(child_list) == 0:
                 logger.info("mutation to reproduce env FAILED!!!")
                 return
-            #print(child_list)
             admitted = 0
             for child in child_list:
                 new_env_config, seed, _, _ = child
@@ -368,7 +362,6 @@ class MultiESOptimizer:
 
             for o in self.optimizers.values():
                 o.clean_dicts_before_iter()
-
             self.ind_es_step(iteration=iteration)
 
             if len(self.optimizers) > 1 and iteration % steps_before_transfer == 0:
@@ -379,3 +372,6 @@ class MultiESOptimizer:
             if iteration % steps_before_transfer == 0:
                 for o in self.optimizers.values():
                     o.save_to_logger(iteration)
+
+        for o in self.optimizers.values():
+            o.save_to_logger(iteration)

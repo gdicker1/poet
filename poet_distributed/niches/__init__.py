@@ -15,3 +15,4 @@
 
 from .core import Niche
 from .box2d import Box2DNiche
+from .minigrid import MiniGridNiche

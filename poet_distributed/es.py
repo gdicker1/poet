@@ -85,8 +85,10 @@ def run_eval_batch_fiber(iteration, optim_id, batch_size, rs_seed):
     niche = fiber_get_niche(iteration, optim_id)
     theta = fiber_get_theta(iteration, optim_id)
 
+
     returns, lengths = niche.rollout_batch((theta for i in range(batch_size)),
                                            batch_size, random_state, eval=True)
+
 
     return EvalResult(returns=returns, lengths=lengths)
 
@@ -396,8 +398,8 @@ class ESOptimizer:
         niches[optim_id].delete_env(env_name)
 
     def start_chunk_fiber(self, runner, batches_per_chunk, batch_size, *args):
-        logger.debug('Optimizer {} spawning {} batches of size {}'.format(
-            self.optim_id, batches_per_chunk, batch_size))
+        logger.debug('Optimizer {} spawning {} batches of size {} for {}'.format(
+            self.optim_id, batches_per_chunk, batch_size, runner.__name__))
 
         rs_seeds = np.random.randint(np.int32(2 ** 31 - 1), size=batches_per_chunk)
 

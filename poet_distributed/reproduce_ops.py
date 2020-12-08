@@ -14,7 +14,7 @@
 
 from poet_distributed.niches.box2d.env import Env_config
 # GDD: Need to edit to our version of Env_config
-from poet_distributed.niches.minigrid.env import MG_Env_config
+from poet_distributed.niches.minigrid.env import Env_config as MG_Env_config
 import numpy as np
 
 def name_env_config(ground_roughness,
@@ -150,40 +150,39 @@ def mg_name_env_config(lava, obs, btb, door, wall):
 
 class MG_Reproducer(Reproducer):
     def __init__(self,args):
-        super().__init__(self,args)
+        super().__init__(args)
 
 
     # Arr will hold a list of a few different Env_Configs, just choose one of them
-    def pick(self, arr)
+    def pick(self, arr):
         return self.rs.choice(arr)
 
     def mutate(self, parent):
         lava_prob = list(parent.lava_prob)
-        obstacle_lvl = list(parent.obstacle_level)
+        obstacle_lvl = list(parent.obstacle_lvl)
         btb_prob = list(parent.box_to_ball_prob)
         door_prob = list(parent.door_prob)
         wall_prob = list(parent.wall_prob)
 
         if 'lava' in self.categories:
-            lava_prob = self.populate_array(lava_prob, [0.0, 0.1], increment=0.05, max_value=[0.4, 0.4]
-
+            lava_prob = self.populate_array(lava_prob, [0.0, 0.], increment=0.05, max_value=[0.4, 0.4])
         if 'obstacle' in self.categories:
-            obstacle_lvl = self.populate_array(obstacle_lvl, [0,5], increment=0.33, max_value=[5,5]
+            obstacle_lvl = self.populate_array(obstacle_lvl, [0,1], increment=0.33, max_value=[5,5])
 
         if 'box_to_ball' in self.categories:
-            btb_prob = self.populate_array(btb_prob, [0.0, 0.3], increment=0.05, max_value=[1.0, 1.0]
+            btb_prob = self.populate_array(btb_prob, [0.0, 0.3], increment=0.05, max_value=[1.0, 1.0])
 
         if 'door' in self.categories:
-            door_prob = self.populate_array(door_prob, [0.0, 0.3], increment=0.05, max_value=[1.0, 1.0]
+            door_prob = self.populate_array(door_prob, [0.0, 0.3], increment=0.05, max_value=[1.0, 1.0])
 
         if 'wall' in self.categories:
-            wall_prob = self.populate_array(wall_prob, [0.0, 0.0], increment=0.05, max_value=[1.0, 1.0]
+            wall_prob = self.populate_array(wall_prob, [0.0, 0.0], increment=0.05, max_value=[1.0, 1.0])
 
         child_name = mg_name_env_config(lava_prob, obstacle_lvl, btb_prob, door_prob, wall_prob)
 
         child = MG_Env_config(name=child_name,
                               lava_prob=lava_prob,
-                              obstacle_level=obstacle_lvl,
+                              obstacle_lvl=obstacle_lvl,
                               box_to_ball_prob=btb_prob,
                               door_prob=door_prob,
                               wall_prob=wall_prob)

@@ -71,7 +71,8 @@ class Model:
         elif game.activation == 'sigmoid':
             self.activations = [np.tanh, np.tanh, sigmoid]
         elif game.activation == 'softmax':
-            self.activations = [np.tanh, np.tanh, softmax]
+            #self.activations = [np.tanh, np.tanh, softmax]
+            self.activations = [relu, relu, sigmoid]
             self.sample_output = True
         elif game.activation == 'passthru':
             self.activations = [np.tanh, np.tanh, passthru]
@@ -126,7 +127,8 @@ class Model:
             h = self.activations[i](h)
 
         if self.sample_output:
-            h = sample(h)
+            # Ensure that h is normalized 
+            h = sample(h/np.sum(h))
 
         return h
 
@@ -162,12 +164,21 @@ class Model:
     def get_random_model_params(self, stdev=0.1):
         return np.random.randn(self.param_count) * stdev
 
+
+# The obs object put out py minigrid is a dict with image [7x7x3 of ints], direction [1 int], and mission string [string]
+#  This reshapes obs into [image.flatten(), direction]
+def reshape_obs(obs):
+    ret_obs = obs['image'].flatten()
+    ret_obs = np.append(ret_obs, obs['direction'])
+    return ret_obs
+
+
 def simulate(model, seed, train_mode=False, render_mode=False, num_episode=5,
              max_len=-1, env_config_this_sim=None):
     reward_list = []
     t_list = []
 
-    max_episode_length = 2000
+    max_episode_length = model.env.max_steps
 
     if train_mode and max_len > 0:
         if max_len < max_episode_length:
@@ -188,12 +199,12 @@ def simulate(model, seed, train_mode=False, render_mode=False, num_episode=5,
             model.reset()
 
         obs = model.env.reset()
+        obs = reshape_obs(obs)
         if obs is None:
             obs = np.zeros(model.input_size)
 
         total_reward = 0.0
-        for t in range(max_episode_length):
-
+        for t in range(max_episode_length): 
             if render_mode:
                 model.env.render("human")
                 if RENDER_DELAY:
@@ -208,11 +219,13 @@ def simulate(model, seed, train_mode=False, render_mode=False, num_episode=5,
                         obs, t=t, mean_mode=(not train_mode))
                 else:
                     action = model.get_action(obs, t=t, mean_mode=False)
-
+            #print('t:{}\taction:{}'.format(t, action),flush=True)
             obs, reward, done, info = model.env.step(action)
+            obs = reshape_obs(obs)
             total_reward += reward
 
             if done:
+                #print("reward: ", reward)
                 break
 
         if render_mode:
