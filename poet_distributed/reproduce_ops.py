@@ -165,7 +165,7 @@ class MG_Reproducer(Reproducer):
         wall_prob = list(parent.wall_prob)
 
         if 'lava' in self.categories:
-            lava_prob = self.populate_array(lava_prob, [0.0, 0.], increment=0.05, max_value=[0.4, 0.4])
+            lava_prob = self.populate_array(lava_prob, [0.0, 0.1], increment=0.05, max_value=[0.4, 0.4])
         if 'obstacle' in self.categories:
             obstacle_lvl = self.populate_array(obstacle_lvl, [0,1], increment=0.33, max_value=[5,5])
 
@@ -176,7 +176,7 @@ class MG_Reproducer(Reproducer):
             door_prob = self.populate_array(door_prob, [0.0, 0.3], increment=0.05, max_value=[1.0, 1.0])
 
         if 'wall' in self.categories:
-            wall_prob = self.populate_array(wall_prob, [0.0, 0.0], increment=0.05, max_value=[1.0, 1.0])
+            wall_prob = self.populate_array(wall_prob, [0.0, 0.3], increment=0.05, max_value=[1.0, 1.0])
 
         child_name = mg_name_env_config(lava_prob, obstacle_lvl, btb_prob, door_prob, wall_prob)
 

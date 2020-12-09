@@ -72,7 +72,7 @@ class Model:
             self.activations = [np.tanh, np.tanh, sigmoid]
         elif game.activation == 'softmax':
             #self.activations = [np.tanh, np.tanh, softmax]
-            self.activations = [relu, relu, sigmoid]
+            self.activations = [relu, relu, softmax]
             self.sample_output = True
         elif game.activation == 'passthru':
             self.activations = [np.tanh, np.tanh, passthru]

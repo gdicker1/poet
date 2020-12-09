@@ -5,11 +5,11 @@ from collections import OrderedDict
 
 DEFAULT_ENV = Env_config(
         name='default_env',
-        lava_prob=[0., 0.],
+        lava_prob=[0., 0.1],
         obstacle_lvl=[0., 1.],
         box_to_ball_prob=[0., 0.3],
         door_prob=[0., 0.3],
-        wall_prob=[0., 0.])
+        wall_prob=[0., 0.3])
 
 class MiniGridNiche(Niche):
     def __init__(self, env_configs, seed, init='random', stochastic=False):
